@@ -17,7 +17,6 @@ pub struct DefaultPlugins;
 
 impl Plugin for DefaultPlugins {
     fn build(&self, app: &mut App) {
-        playdate::println!("test");
         app.add_plugins((
             input::InputPlugin,
             sprite::SpritePlugin,

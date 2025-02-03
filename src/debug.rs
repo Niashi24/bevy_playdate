@@ -4,7 +4,7 @@ use bevy_app::{App, Plugin, PostUpdate};
 use bevy_ecs::observer::Trigger;
 use bevy_ecs::prelude::{IntoSystemConfigs, Resource};
 use bevy_ecs::system::{Res, ResMut};
-use playdate::{api, println};
+use playdate::api;
 use playdate::sprite::draw_sprites;
 use playdate::sys::ffi::LCDColor;
 use playdate::system::System;
@@ -56,10 +56,8 @@ pub fn draw_fps_top_left() {
 }
 
 pub fn toggle_debug_system(trigger: Trigger<SystemEvent>, mut debug: ResMut<Debug>) {
-    println!("observed {:?}", trigger.event());
     const BACKTICK: u32 = 96;
     if matches!(*trigger.event(), SystemEvent::KeyPressed(BACKTICK)) {
-        println!("triggered");
         debug.toggle_enabled();
     }
 }
