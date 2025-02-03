@@ -56,9 +56,10 @@ pub fn draw_fps_top_left() {
 }
 
 pub fn toggle_debug_system(trigger: Trigger<SystemEvent>, mut debug: ResMut<Debug>) {
-    println!("{:?}", trigger.event());
+    println!("observed {:?}", trigger.event());
     const BACKTICK: u32 = 96;
     if matches!(*trigger.event(), SystemEvent::KeyPressed(BACKTICK)) {
+        println!("triggered");
         debug.toggle_enabled();
     }
 }
