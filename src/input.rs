@@ -1,11 +1,15 @@
 use bevy_app::{App, Plugin, PreUpdate};
+use bevy_ecs::change_detection::DetectChangesMut;
 use bevy_ecs::reflect::ReflectResource;
 use bevy_ecs::resource::Resource;
 use bevy_ecs::schedule::{IntoSystemConfigs, SystemSet};
 use bevy_ecs::system::{NonSend, ResMut};
+use bevy_input::ButtonInput;
 use bevy_reflect::prelude::{Reflect, ReflectDefault};
 use playdate::controls::api::Cache;
-use playdate::controls::peripherals::{Accelerometer, Crank};
+use playdate::controls::buttons::PDButtonsExt;
+use playdate::controls::peripherals::{Accelerometer, Crank, SystemExt};
+use playdate::system::System;
 
 /// Adds crank input (and once `bevy_input` is `no_std`, d-pad and buttons)
 pub struct InputPlugin;
@@ -14,13 +18,19 @@ impl Plugin for InputPlugin {
     fn build(&self, app: &mut App) {
         app.insert_non_send_resource(Crank::Cached())
             .init_resource::<CrankInput>()
+            .init_resource::<ButtonInput<PlaydateButton>>()
             .insert_non_send_resource(Accelerometer::Cached())
             .init_resource::<AccelerometerInput>()
             .register_type::<CrankInput>()
             .register_type::<AccelerometerInput>()
             .add_systems(
                 PreUpdate,
-                (crank_input_system, accelerometer_input_system).in_set(PdInputSystem),
+                (
+                    button_input_system,
+                    crank_input_system,
+                    accelerometer_input_system,
+                )
+                    .in_set(PdInputSystem),
             );
     }
 }
@@ -28,6 +38,50 @@ impl Plugin for InputPlugin {
 /// Label for systems that update the input data.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, SystemSet)]
 pub struct PdInputSystem;
+
+/// Enumeration of Playdate button-like inputs, including both
+/// the A and B buttons but also the d-pad.
+///
+/// Use with `Res<ButtonInput<PlaydateButton>>` to get the current input.
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash)]
+pub enum PlaydateButton {
+    A,
+    B,
+    Up,
+    Left,
+    Right,
+    Down,
+}
+
+pub fn button_input_system(mut input: ResMut<ButtonInput<PlaydateButton>>) {
+    input.bypass_change_detection().clear();
+    let buttons = System::Default().buttons().get();
+    for (pressed, btn) in [
+        (buttons.pushed.a(), PlaydateButton::A),
+        (buttons.pushed.b(), PlaydateButton::B),
+        (buttons.pushed.up(), PlaydateButton::Up),
+        (buttons.pushed.down(), PlaydateButton::Down),
+        (buttons.pushed.right(), PlaydateButton::Right),
+        (buttons.pushed.left(), PlaydateButton::Left),
+    ] {
+        if pressed {
+            input.press(btn);
+        }
+    }
+
+    for (released, btn) in [
+        (buttons.released.a(), PlaydateButton::A),
+        (buttons.released.b(), PlaydateButton::B),
+        (buttons.released.up(), PlaydateButton::Up),
+        (buttons.released.down(), PlaydateButton::Down),
+        (buttons.released.right(), PlaydateButton::Right),
+        (buttons.released.left(), PlaydateButton::Left),
+    ] {
+        if released {
+            input.release(btn);
+        }
+    }
+}
 
 /// A resource reporting the current input or state of the crank.
 #[derive(Resource, Reflect, Copy, Clone, Debug, PartialEq, Default)]

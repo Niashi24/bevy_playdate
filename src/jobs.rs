@@ -21,8 +21,10 @@ pub struct Jobs {
     id_gen: JobId,
     unstarted: Vec<UnstartedJob>,
     jobs: BinaryHeap<RunningJob>,
-    finished: HashMap<JobId, Result<Box<dyn Any>, Box<dyn Any>>>,
+    finished: HashMap<JobId, FinishedJob>,
 }
+
+type FinishedJob = Result<Box<dyn Any>, Box<dyn Any>>;
 
 unsafe impl Send for Jobs {}
 unsafe impl Sync for Jobs {}
@@ -211,7 +213,6 @@ impl Ord for RunningJob {
 }
 
 pub enum WorkResult<TWork, TSuccess, TError> {
-    ///
     Continue(TWork),
 
     Skip(TWork),
@@ -222,7 +223,6 @@ pub enum WorkResult<TWork, TSuccess, TError> {
 }
 
 enum ErasedWorkStatus {
-    ///
     Continue(Box<dyn Any>),
 
     Skip(Box<dyn Any>),
