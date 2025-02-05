@@ -7,7 +7,7 @@ edition = "2021"
 members = ["bevy_playdate_macros"]
 
 [dependencies]
-bevy_playdate_macros = { path = "./bevy_playdate_macros" }
+bevy_playdate_macros = { path = "bevy_playdate_macros" }
 playdate = "*"
 bevy_ecs = { git = "https://github.com/bevyengine/bevy", default-features = false, features = ["bevy_reflect"] }
 bevy_app = { git = "https://github.com/bevyengine/bevy", default-features = false, features = ["bevy_reflect"] }
