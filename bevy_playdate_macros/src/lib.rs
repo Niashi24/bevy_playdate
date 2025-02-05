@@ -17,7 +17,6 @@ pub fn init_app(_attr: TokenStream, item: TokenStream) -> TokenStream {
         use pd::sys::EventLoopCtrl;
         use pd::system::System;
         use pd::system::update::UpdateCtrl;
-        use crate::game::GamePlugin;
 
         #[no_mangle]
         fn event_handler(_api: NonNull<PlaydateAPI>, event: PDSystemEvent, _: u32) -> EventLoopCtrl {
