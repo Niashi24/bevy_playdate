@@ -10,34 +10,26 @@ pub fn init_app(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let fn_sig = &input_fn.sig;
 
     let expanded = quote! {
-        use bevy_app::App;
-        use core::ptr::NonNull;
-        use pd::display::Display;
-        use pd::sys::ffi::{PDSystemEvent, PlaydateAPI};
-        use pd::sys::EventLoopCtrl;
-        use pd::system::System;
-        use pd::system::update::UpdateCtrl;
-
         #[unsafe(no_mangle)]
-        fn event_handler(_api: NonNull<PlaydateAPI>, event: PDSystemEvent, _: u32) -> EventLoopCtrl {
+        fn event_handler(_api: core::ptr::NonNull<pd::sys::ffi::PlaydateAPI>, event: pd::sys::ffi::PDSystemEvent, _: u32) -> pd::sys::EventLoopCtrl {
             match event {
-                PDSystemEvent::kEventInit => {}
+                pd::sys::ffi::PDSystemEvent::kEventInit => {}
                 _ => return EventLoopCtrl::Continue,
             }
 
             let mut app = init_app();
 
-            Display::Default().set_refresh_rate(50.);
+            pd::display::Display::Default().set_refresh_rate(50.);
 
-            System::Default().set_update_callback_boxed(
+            pd::system::System::Default().set_update_callback_boxed(
                 move |_| {
                     app.update();
-                    UpdateCtrl::Continue
+                    pd::system::update::UpdateCtrl::Continue
                 },
                 (),
             );
 
-            EventLoopCtrl::Continue
+            pd::sys::EventLoopCtrl::Continue
         }
         
         #fn_vis #fn_sig #fn_body
