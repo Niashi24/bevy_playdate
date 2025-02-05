@@ -14,7 +14,7 @@ pub fn init_app(_attr: TokenStream, item: TokenStream) -> TokenStream {
         fn event_handler(_api: core::ptr::NonNull<pd::sys::ffi::PlaydateAPI>, event: pd::sys::ffi::PDSystemEvent, _: u32) -> pd::sys::EventLoopCtrl {
             match event {
                 pd::sys::ffi::PDSystemEvent::kEventInit => {}
-                _ => return EventLoopCtrl::Continue,
+                _ => return pd::sys::EventLoopCtrl::Continue,
             }
 
             let mut app = init_app();
