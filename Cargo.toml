@@ -3,6 +3,9 @@ name = "bevy_playdate"
 version = "0.1.0"
 edition = "2021"
 
+[workspace]
+members = ["bevy_playdate_macros"]
+
 [dependencies]
 bevy_playdate_macros = { path = "./bevy_playdate_macros" }
 playdate = "*"
