@@ -18,7 +18,7 @@ pub fn init_app(_attr: TokenStream, item: TokenStream) -> TokenStream {
         use pd::system::System;
         use pd::system::update::UpdateCtrl;
 
-        #[no_mangle]
+        #[unsafe(no_mangle)]
         fn event_handler(_api: NonNull<PlaydateAPI>, event: PDSystemEvent, _: u32) -> EventLoopCtrl {
             match event {
                 PDSystemEvent::kEventInit => {}
