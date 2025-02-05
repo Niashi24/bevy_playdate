@@ -1,1 +1,4 @@
 /target
+Cargo.lock
+bevy_playdate_macros/target
+bevy_playdate_macros/Cargo.toml

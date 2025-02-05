@@ -9,6 +9,8 @@ pub mod sprite;
 pub mod time;
 pub mod view;
 
+pub use bevy_playdate_macros::init_app;
+
 extern crate alloc;
 
 use bevy_app::{App, Plugin};
