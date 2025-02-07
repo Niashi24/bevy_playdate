@@ -19,8 +19,6 @@ pub fn init_app(_attr: TokenStream, item: TokenStream) -> TokenStream {
 
             let mut app = init_app();
 
-            pd::display::Display::Default().set_refresh_rate(50.);
-
             pd::system::System::Default().set_update_callback_boxed(
                 move |_| {
                     app.update();
